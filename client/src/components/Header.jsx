@@ -13,7 +13,7 @@ export default function Header() {
             <span>ify</span>
           </h1>
         </Link>
-        <ul className="flex gap-4">
+        <ul className="flex gap-4 items-center">
           <Link to="/">
             <li className="hidden sm:inline text-cream">Home</li>
           </Link>
