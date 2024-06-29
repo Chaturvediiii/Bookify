@@ -9,7 +9,7 @@ export const test = (req,res)=>{
 }
 
 export const updateUser = async (req,res,next) =>{
-    if(req.user.id!=req.params.id) return next(errorHandler(401,'You can update your account only!'))
+    if(req.user.id!=req.params.id) return next(errorHandler(401,'You are not authorized to delete this account'))
 
     try{
         if(req.body.password){
@@ -28,6 +28,20 @@ export const updateUser = async (req,res,next) =>{
         const {password,...rest} = updatedUser._doc
 
         res.status(200).json(rest)
+    }
+    catch(error){
+        next(error)
+    }
+}
+
+
+export const deleteUser = async (req,res,next) =>{
+    if(req.user.id!==req.params.id) return next(errorHandler(401,'You are not authorized to delete this account'))
+
+    try{
+        await User.findByIdAndDelete(req.params.id)
+        res.clearCookie('access_token')
+        res.status(200).json('User deleted Successfully')
     }
     catch(error){
         next(error)

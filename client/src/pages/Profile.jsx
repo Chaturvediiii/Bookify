@@ -1,4 +1,4 @@
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useRef, useState, useEffect } from "react";
 import {
   getDownloadURL,
@@ -7,7 +7,15 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-import { updateUserStart,updateUserSuccess,updateUserFailure } from "../redux/user/userSlice";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+} from "../redux/user/userSlice";
+import {useNavigate} from 'react-router-dom'
 
 export default function Profile() {
   const [file, setFile] = useState(undefined);
@@ -16,8 +24,9 @@ export default function Profile() {
   const [filePer, setFilePer] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
-  const [updateSuccess,setUpdateSuccess] = useState(false)
-  const dispatch = useDispatch()
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (file) {
@@ -48,33 +57,51 @@ export default function Profile() {
       }
     );
   };
-  const handleChange = async  (e) =>{
-    setFormData({...formData,[e.target.id] : e.target.value})
-  }
-  const handleSubmit = async (e) =>{
-    e.preventDefault()
-    try{
-      dispatch(updateUserStart())
-      const res = await fetch(`/server/user/update/${currentUser._id}`,{
-        method : 'POST',
-        headers : {
-          'Content-Type' : 'application/json'
+  const handleChange = async (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/server/user/update/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body : JSON.stringify(formData)
-      })
+        body: JSON.stringify(formData),
+      });
 
-      const data = await res.json()
-      if(data.success===false){
-        dispatch(updateUserFailure(data.message))
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
         return;
       }
-      dispatch(updateUserSuccess(data))
-      setUpdateSuccess(true)
+      dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart())
+      const res = await fetch(`/server/user/delete/${currentUser._id}`,{
+        method : 'DELETE',
+      })
+      const data = await res.json()
+      if(data.success===false){
+        dispatch(deleteUserFailure(data.message))
+        return ;
+      }
+      navigate('/signin')
+      dispatch(deleteUserSuccess(data))
     }
     catch(error){
-      dispatch(updateUserFailure(error.message))
+      dispatch(deleteUserFailure(error.message))
     }
-  }
+  };
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7 uppercase">
@@ -96,7 +123,9 @@ export default function Profile() {
         />
         <p className="text-sm self-center">
           {fileUploadError ? (
-            <span className="text-red-700">Error Image Upload (Image must be less than 2 mb)</span>
+            <span className="text-red-700">
+              Error Image Upload (Image must be less than 2 mb)
+            </span>
           ) : filePer > 0 && filePer < 100 ? (
             <span className="text-blue-950">{`Uplaoding ${filePer}%`}</span>
           ) : filePer === 100 ? (
@@ -126,19 +155,29 @@ export default function Profile() {
           placeholder="password"
           id="password"
           className="border p-3 rounded-sm"
-          defaultValue='*******'
+          defaultValue="*******"
           onChange={handleChange}
         />
-        <button disabled={loading} className="bg-blue-950 opacity-90 hover:opacity-80 p-3 text-white rounded-sm uppercase">
-          {loading ? 'Loading...' : 'Update'}
+        <button
+          disabled={loading}
+          className="bg-blue-950 opacity-90 hover:opacity-80 p-3 text-white rounded-sm uppercase"
+        >
+          {loading ? "Loading..." : "Update"}
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 p-3 rounded-sm">Delete Account</span>
+        <span
+          onClick={handleDeleteUser}
+          className="text-red-700 p-3 rounded-sm cursor-pointer"
+        >
+          Delete Account
+        </span>
         <span className="text-green-700 p-3 rounded-sm "> Sign Out</span>
       </div>
-      <p className="text-red-700 mt-5 text-center">{error ? error : ''}</p>
-      <p className="text-green-700 text-center mt-5">{updateSuccess ? 'User updated successfully' : ''}</p>
+      <p className="text-red-700 mt-5 text-center">{error ? error : ""}</p>
+      <p className="text-green-700 text-center mt-5">
+        {updateSuccess ? "User updated successfully" : ""}
+      </p>
     </div>
   );
 }
