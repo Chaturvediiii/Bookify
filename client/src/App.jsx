@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import Header from "./components/Header";
 import Books from "./pages/Books";
 import Contact from "./pages/Contact";
+import CreateBook from "./pages/CreateBook";
 import PrivateRoute from "./components/PrivateRoute";
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
+          <Route path="/createBook" element={<CreateBook/>}/>
         </Route>
         <Route path="/books" element={<Books />} />
         <Route path="/contact" element={<Contact />} />

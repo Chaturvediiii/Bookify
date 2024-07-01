@@ -18,7 +18,7 @@ import {
   signOutStart,
   signOutSuccess
 } from "../redux/user/userSlice";
-import {useNavigate} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 
 export default function Profile() {
   const [file, setFile] = useState(undefined);
@@ -183,6 +183,7 @@ export default function Profile() {
         >
           {loading ? "Loading..." : "Update"}
         </button>
+        <Link to='/createBook' className="bg-green-700 p-3 text-center text-white hover:opacity-80">Enter book details you want to sell</Link>
       </form>
       <div className="flex justify-between mt-5">
         <span
