@@ -1,46 +1,48 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useSelector,useDispatch } from 'react-redux'
-import { signInStart,signInFailure,signInSuccess } from "../redux/user/userSlice";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  signInStart,
+  signInFailure,
+  signInSuccess,
+} from "../redux/user/userSlice";
 import OAuth from "../components/OAuth";
 
 export default function SignIn() {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
-  const [formData, setFormData] = useState({})
-  const {loading,error} = useSelector((state)=>state.user)
-  const handleChange = (e) =>{
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState({});
+  const { loading, error } = useSelector((state) => state.user);
+  const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.id] : e.target.value, 
-    })
-  }
+      [e.target.id]: e.target.value,
+    });
+  };
 
-  const handleSubmit = async (e) =>{
-    e.preventDefault()
-    try{
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
       dispatch(signInStart());
-      const res = await fetch('/server/auth/signin',
-        {
-          method : 'POST',
-          headers : {
-            'Content-Type' : 'application/json',
-          },
-          body: JSON.stringify(formData)
-        })
-        const data = await res.json();
-        if(data.success === false){
-          dispatch(signInFailure(data.message))
-          return
-        }
-        navigate('/')
-        dispatch(signInSuccess(data))
+      const res = await fetch("/server/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(signInFailure(data.message));
+        return;
+      }
+      navigate("/");
+      dispatch(signInSuccess(data));
+    } catch (error) {
+      dispatch(signInFailure(error.message));
     }
-    catch(error){
-      dispatch(signInFailure(error.message))
-    }
-  }
+  };
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
@@ -59,10 +61,13 @@ export default function SignIn() {
           id="password"
           onChange={handleChange}
         />
-        <button disabled={loading} className="bg-blue-950 text-cream p-3 rounded-sm hover:opacity-95 disabled:opacity-80 uppercase">
-          {loading ? 'Loading...' : 'Sign In'}
+        <button
+          disabled={loading}
+          className="bg-blue-950 text-cream p-3 rounded-sm hover:opacity-95 disabled:opacity-80 uppercase"
+        >
+          {loading ? "Loading..." : "Sign In"}
         </button>
-        <OAuth/>
+        <OAuth />
       </form>
       <div className="flex gap-2 mt-5">
         <p>Dont have an account?</p>
@@ -74,4 +79,3 @@ export default function SignIn() {
     </div>
   );
 }
-

@@ -120,14 +120,27 @@ export default function CreateBook() {
           </div>
         </div>
         <div className="flex flex-col flex-1 gap-4">
-          <p className="font-semibold">Images:
-            <span className="font-normal text-gray-600 ml-2">The first image will be the cover (max 6)</span>
+          <p className="font-semibold">
+            Images:
+            <span className="font-normal text-gray-600 ml-2">
+              The first image will be the cover (max 6)
+            </span>
           </p>
           <div className="flex gap-4">
-            <input type="file" id="images" accept="image/*" multiple className="p-3 border border-gray-300 rounded-sm w-full bg-white"/>
-            <button className="p-3 text-green-700 border border-green-700  rounded-sm uppercase hover:shadow-lg disabled:opacity-80">Upload</button>
+            <input
+              type="file"
+              id="images"
+              accept="image/*"
+              multiple
+              className="p-3 border border-gray-300 rounded-sm w-full bg-white"
+            />
+            <button className="p-3 text-green-700 border border-green-700  rounded-sm uppercase hover:shadow-lg disabled:opacity-80">
+              Upload
+            </button>
           </div>
-        <button className="p-3 bg-blue-950  text-white rounded-ms uppercase hover:opacity-95 disabled:opacity-80">Create Book</button>
+          <button className="p-3 bg-blue-950  text-white rounded-ms uppercase hover:opacity-95 disabled:opacity-80">
+            Create Book
+          </button>
         </div>
       </form>
     </main>

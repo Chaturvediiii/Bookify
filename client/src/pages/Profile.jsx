@@ -16,9 +16,9 @@ import {
   deleteUserFailure,
   signOutFailure,
   signOutStart,
-  signOutSuccess
+  signOutSuccess,
 } from "../redux/user/userSlice";
-import {Link, useNavigate} from 'react-router-dom'
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const [file, setFile] = useState(undefined);
@@ -29,7 +29,7 @@ export default function Profile() {
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (file) {
@@ -89,38 +89,36 @@ export default function Profile() {
 
   const handleDeleteUser = async () => {
     try {
-      dispatch(deleteUserStart())
-      const res = await fetch(`/server/user/delete/${currentUser._id}`,{
-        method : 'DELETE',
-      })
-      const data = await res.json()
-      if(data.success===false){
-        dispatch(deleteUserFailure(data.message))
-        return ;
+      dispatch(deleteUserStart());
+      const res = await fetch(`/server/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
       }
-      navigate('/signin')
-      dispatch(deleteUserSuccess(data))
-    }
-    catch(error){
-      dispatch(deleteUserFailure(error.message))
+      navigate("/signin");
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
     }
   };
 
   const handlesignOut = async () => {
-    try{
-      dispatch(signOutStart())
-      const res = await  fetch('/server/auth/signOut')
+    try {
+      dispatch(signOutStart());
+      const res = await fetch("/server/auth/signOut");
       const data = res.json();
 
-      if(data.success===false){
+      if (data.success === false) {
         return;
       }
-      dispatch(signOutSuccess(data))
+      dispatch(signOutSuccess(data));
+    } catch (error) {
+      dispatch(signOutFailure(error.message));
     }
-    catch(error){
-      dispatch(signOutFailure(error.message))
-    }
-  }
+  };
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7 uppercase">
@@ -183,7 +181,12 @@ export default function Profile() {
         >
           {loading ? "Loading..." : "Update"}
         </button>
-        <Link to='/createBook' className="bg-green-700 p-3 text-center text-white hover:opacity-80">Enter book details you want to sell</Link>
+        <Link
+          to="/createBook"
+          className="bg-green-700 p-3 text-center text-white hover:opacity-80"
+        >
+          Enter book details you want to sell
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span
@@ -192,7 +195,13 @@ export default function Profile() {
         >
           Delete Account
         </span>
-        <span onClick={handlesignOut} className="text-green-700 p-3 rounded-sm cursor-pointer"> Sign Out</span>
+        <span
+          onClick={handlesignOut}
+          className="text-green-700 p-3 rounded-sm cursor-pointer"
+        >
+          {" "}
+          Sign Out
+        </span>
       </div>
       <p className="text-red-700 mt-5 text-center">{error ? error : ""}</p>
       <p className="text-green-700 text-center mt-5">
